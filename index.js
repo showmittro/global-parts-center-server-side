@@ -21,7 +21,7 @@ async function run() {
         await client.connect();
         const globalPartsCollection = client.db('globalParts').collection('parts')
         const globalReviewsCollection = client.db('globalParts').collection('reviews')
-     
+
 
         app.get('/parts', async (req, res) => {
             const query = {};
@@ -31,19 +31,19 @@ async function run() {
             res.send(parts);
 
         })
-        app.get('/parts/:id', async(req, res) =>{
+        app.get('/parts/:id', async (req, res) => {
             const id = req.params.id;
-            const query={_id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const parts = await globalPartsCollection.findOne(query);
             res.send(parts);
         });
-    
+
 
         // review Collection 
 
         app.get('/reviews', async (req, res) => {
             const email = req.query.email;
-            const query = { email: email,}
+            const query = { email: email, }
             const cursor = globalReviewsCollection.find(query);
             const reviews = await cursor.toArray();
             res.json(reviews);
