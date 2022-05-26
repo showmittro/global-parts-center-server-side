@@ -39,6 +39,12 @@ async function run() {
             const parts = await globalPartsCollection.findOne(query);
             res.send(parts);
         });
+
+        app.post('/parts', async (req, res) => {
+            const parts = req.body;
+            const result = await globalPartsCollection.insertOne(parts);
+            res.json(result)
+        });
          // DELETE
          app.delete('/parts/:serviceId', async(req, res) =>{
             let id = req.params.serviceId;
