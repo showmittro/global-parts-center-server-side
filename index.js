@@ -21,6 +21,8 @@ async function run() {
         await client.connect();
         const globalPartsCollection = client.db('globalParts').collection('parts')
         const globalReviewsCollection = client.db('globalParts').collection('reviews')
+        const globalUserCollection = client.db('globalParts').collection('users')
+       
 
 
         app.get('/parts', async (req, res) => {
@@ -36,6 +38,13 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const parts = await globalPartsCollection.findOne(query);
             res.send(parts);
+        });
+         // DELETE
+         app.delete('/parts/:serviceId', async(req, res) =>{
+            let id = req.params.serviceId;
+            const query = {_id: ObjectId(id)};
+            const result = await globalPartsCollection.deleteOne(query);
+            res.send(result);
         });
 
 
@@ -54,6 +63,43 @@ async function run() {
             const result = await globalReviewsCollection.insertOne(review);
             res.json(result)
         });
+
+          //  user admin collection 
+    app.get('/users/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { email: email };
+        const user = await globalUserCollection.findOne(query);
+        let isAdmin = false;
+        if (user?.role === 'admin') {
+            isAdmin = true;
+        }
+        res.json({ admin: isAdmin });
+    })
+
+    app.post('/users', async (req, res) => {
+        const user = req.body;
+        const result = await globalUserCollection.insertOne(user);
+        console.log(result);
+        res.json(result);
+    });
+
+    app.put('/users', async (req, res) => {
+        const user = req.body;
+        const filter = { email: user.email };
+        const options = { upsert: true };
+        const updateDoc = { $set: user };
+        const result = await globalUserCollection.updateOne(filter, updateDoc, options);
+        res.json(result);
+    });
+
+    app.put('/users/admin',  async (req, res) => {
+        const user = req.body;
+                const filter = { email: user.email };
+                const updateDoc = { $set: { role: 'admin' } };
+                const result = await globalUserCollection.updateOne(filter, updateDoc);
+                res.json(result);
+            
+        })
 
     }
     finally {
