@@ -70,18 +70,6 @@ async function run() {
             res.json(result)
         });
 
-        //       //  user admin collection 
-        // app.get('/user/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     const query = { email: email };
-        //     const user = await globalUserCollection.findOne(query);
-        //     let isAdmin = false;
-        //     if (user?.role === 'admin') {
-        //         isAdmin = true;
-        //     }
-        //     res.send({ admin: isAdmin });
-        // })
-
         app.post('/user', async (req, res) => {
             const user = req.body;
             const result = await globalUserCollection.insertOne(user);
@@ -89,7 +77,7 @@ async function run() {
             res.send(result);
         });
 
-        app.get('/users/:email', async (req, res) => {
+        app.get('/user/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
             const user = await globalUserCollection.findOne(query);
